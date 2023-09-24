@@ -9,9 +9,6 @@
 const Color BACKGROUND  = {031, 031, 031, 255};
 int size = 20;
 
-Rectangle slider = { 50, 50, 200, 20 };
-unsigned int amount = 2;
-
 typedef struct {
     Vector2 pos;
     bool type;
@@ -46,20 +43,15 @@ int point_dist(unsigned int index) {
 
 void draw_distance(void) {
     unsigned int closest = used;
-    if(amount == 2)
-        for(int i = 1; i < used; i++) { // WHY ONE????
-            if(point_dist(i) < point_dist(closest))
-                closest = i;
-        }
-
-    for(int i = 1; i < amount; i++) {
-        if(amount != 2)
+    for(int i = 1; i < used; i++) { // WHY ONE????
+        if(point_dist(i) < point_dist(closest))
             closest = i;
-        DrawLineV(GetMousePosition(), drawing[closest].pos, WHITE);
-        unsigned int distance = point_dist(closest);
-        Vector2 midpoint = {GetMouseX()-(GetMouseX()-drawing[closest].pos.x)/2, GetMouseY()-(GetMouseY()-drawing[closest].pos.y)/2};
-        DrawText(TextFormat("%d", distance), midpoint.x, midpoint.y, size, WHITE);
     }
+
+    DrawLineV(GetMousePosition(), drawing[closest].pos, WHITE);
+    unsigned int distance = point_dist(closest);
+    Vector2 midpoint = {GetMouseX()-(GetMouseX()-drawing[closest].pos.x)/2, GetMouseY()-(GetMouseY()-drawing[closest].pos.y)/2};
+    DrawText(TextFormat("%d", distance), midpoint.x, midpoint.y, size, WHITE);
 }
 
 void draw(bool type) {
@@ -84,7 +76,6 @@ int main(void) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(0, 0, "dsdf");
     bool type = true;
-    bool toggle = false;
     while (!WindowShouldClose()) {
         size += GetMouseWheelMove()*2;
         if(size <= 0)
@@ -95,10 +86,6 @@ int main(void) {
             add_shape(type);
         if(IsKeyPressed(KEY_SPACE))
             clear();
-        if(IsKeyPressed(KEY_A)) {
-            toggle = !toggle;
-            amount = toggle ? used : 2;
-        }
 
         BeginDrawing();
             ClearBackground(BACKGROUND);
